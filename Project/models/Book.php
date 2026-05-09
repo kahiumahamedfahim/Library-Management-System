@@ -20,7 +20,7 @@ class Book
     // GET ALL BOOKS
     // =========================
 
-   public function getAll()
+  public function getAll()
 {
     $sql = "
         SELECT
@@ -31,16 +31,19 @@ class Book
             (
                 books.total_copies -
 
-                (
-                    SELECT COUNT(*)
+                COALESCE(
+                    (
+                        SELECT COUNT(*)
 
-                    FROM borrow_records
+                        FROM borrow_records
 
-                    WHERE
-                        borrow_records.book_id = books.id
+                        WHERE
+                            borrow_records.book_id = books.id
 
-                    AND
-                        borrow_records.status = 'borrowed'
+                        AND
+                            borrow_records.status = 'Active'
+                    ),
+                    0
                 )
 
             ) AS available_copies
@@ -141,7 +144,65 @@ class Book
 
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
+// =========================
+// SEARCH BOOKS
+// =========================
 
+public function search($query)
+{
+    $sql = "
+        SELECT
+            books.*,
+
+            genres.name AS genre_name,
+
+            (
+                books.total_copies -
+
+                COALESCE(
+                    (
+                        SELECT COUNT(*)
+
+                        FROM borrow_records
+
+                        WHERE
+                            borrow_records.book_id = books.id
+
+                        AND
+                            borrow_records.status = 'Active'
+                    ),
+                    0
+                )
+
+            ) AS available_copies
+
+        FROM books
+
+        INNER JOIN genres
+        ON books.genre_id = genres.id
+WHERE
+(
+    books.title LIKE :query
+
+    OR books.author LIKE :query
+
+    OR books.isbn LIKE :query
+)
+
+        ORDER BY books.id DESC
+    ";
+
+    $stmt =
+        $this->conn->prepare($sql);
+
+    $stmt->execute([
+
+        ':query' =>
+            "%$query%"
+    ]);
+
+    return $stmt->fetchAll(PDO::FETCH_ASSOC);
+}
 
     // =========================
     // FIND BY ISBN
@@ -214,7 +275,37 @@ public function update($id, $data)
             $data['published_year']
     ]);
 }
+// =========================
+// CHECK ACTIVE BORROWS
+// =========================
 
+public function hasActiveBorrows($id)
+{
+    $sql = "
+        SELECT COUNT(*) AS total
+
+        FROM borrow_records
+
+        WHERE
+            book_id = :id
+
+        AND
+            status = 'Active'
+    ";
+
+    $stmt =
+        $this->conn->prepare($sql);
+
+    $stmt->execute([
+
+        ':id' => $id
+    ]);
+
+    $result =
+        $stmt->fetch(PDO::FETCH_ASSOC);
+
+    return $result['total'] > 0;
+}
 
 // =========================
 // DELETE BOOK
@@ -233,5 +324,55 @@ public function delete($id)
     return $stmt->execute([
         ':id' => $id
     ]);
+}
+// =========================
+// BOOK DETAILS WITH AVAILABILITY
+// =========================
+
+public function findWithAvailability($id)
+{
+    $sql = "
+        SELECT
+            books.*,
+
+            genres.name AS genre_name,
+
+            (
+                books.total_copies -
+
+                COALESCE(
+                    (
+                        SELECT COUNT(*)
+
+                        FROM borrow_records
+
+                        WHERE
+                            borrow_records.book_id = books.id
+
+                        AND
+                            borrow_records.status = 'Active'
+                    ),
+                    0
+                )
+
+            ) AS available_copies
+
+        FROM books
+
+        INNER JOIN genres
+        ON books.genre_id = genres.id
+
+        WHERE books.id = :id
+    ";
+
+    $stmt =
+        $this->conn->prepare($sql);
+
+    $stmt->execute([
+
+        ':id' => $id
+    ]);
+
+    return $stmt->fetch(PDO::FETCH_ASSOC);
 }
 }

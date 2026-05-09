@@ -61,6 +61,16 @@ require_once __DIR__ .
                 Dashboard
 
             </a>
+            <a href="/Library-Management-System/Project/my-books">
+
+    My Books
+
+</a>
+<a href="/Library-Management-System/Project/my-fines">
+
+    My Fines
+
+</a>
 
             <a href="/Library-Management-System/Project/profile">
 
@@ -87,11 +97,21 @@ require_once __DIR__ .
 
             </a>
 
-            <a href="/Library-Management-System/Project/books">
+            <!-- <a href="/Library-Management-System/Project/books">
 
                 Books
 
-            </a>
+            </a> -->
+            <!-- <a href="/Library-Management-System/Project/borrow-requests">
+
+    Borrow Requests
+
+</a> -->
+<!-- <a href="/Library-Management-System/Project/active-loans">
+
+    Active Loans
+
+</a> -->
 
         <?php endif; ?>
 
@@ -111,14 +131,43 @@ require_once __DIR__ .
                 Genres
 
             </a>
+            <li>
 
-            <a href="/Library-Management-System/Project/books">
+    <a href="/Library-Management-System/Project/reports">
+
+        Reports
+
+    </a>
+
+</li>
+
+            <!-- <a href="/Library-Management-System/Project/books">
 
                 Books
 
-            </a>
+            </a> -->
 
         <?php endif; ?>
+
+        <?php if(has_role(['admin', 'librarian'])): ?>
+
+    <!-- <a href="/Library-Management-System/Project/books">
+        Books
+    </a> -->
+
+    <a href="/Library-Management-System/Project/borrow-requests">
+        Borrow Requests
+    </a>
+
+    <a href="/Library-Management-System/Project/active-loans">
+        Active Loans
+    </a>
+
+    <a href="/Library-Management-System/Project/fine-dashboard">
+        Fine Dashboard
+    </a>
+
+<?php endif; ?>
 
 
         <!-- LOGOUT -->
@@ -136,3 +185,5 @@ require_once __DIR__ .
     </div>
 
 </nav>
+<?php require_once __DIR__ .
+'/flash.php'; ?>

@@ -6,15 +6,64 @@ require_once __DIR__ .
 class DashboardController
 {
     // MEMBER
+public function member()
+{
+    auth_check('member');
 
-    public function member()
-    {
-        auth_check('member');
 
-        require_once __DIR__ .
-        '/../views/dashboard/member.php';
-    }
+    // LOAD MODELS
 
+    require_once __DIR__ .
+    '/../models/BorrowRecord.php';
+
+    require_once __DIR__ .
+    '/../models/Fine.php';
+
+
+    // CREATE MODEL OBJECTS
+
+    $borrowModel =
+        new BorrowRecord();
+
+    $fineModel =
+        new Fine();
+
+
+    // MEMBER ID
+
+    $memberId =
+        $_SESSION['member_id'];
+
+
+    // ACTIVE LOANS
+
+    $activeLoans =
+        $borrowModel->getActiveLoanCount(
+            $memberId
+        );
+
+
+    // UPCOMING DUE
+
+    $upcomingDue =
+        $borrowModel->getUpcomingDueCount(
+            $memberId
+        );
+
+
+    // OUTSTANDING FINES
+
+    $outstandingFines =
+        $fineModel->getOutstandingFineTotal(
+            $memberId
+        );
+
+
+    // LOAD VIEW
+
+    require_once __DIR__ .
+    '/../views/dashboard/member.php';
+}
 
     // LIBRARIAN
 

@@ -42,44 +42,83 @@ $pageTitle = "Admin Dashboard";
     <!-- QUICK ACTIONS -->
     <!-- ========================= -->
 
-    <div class="dashboard-cards">
+  <div class="dashboard-cards">
 
-        <a class="card"
-           href="/Library-Management-System/Project/genres">
 
-            <h2>Genres</h2>
+    <!-- GENRES -->
+
+    <a href="/Library-Management-System/Project/genres"
+       class="dashboard-link">
+
+        <div class="card">
+
+            <h2>
+
+                Genres
+
+            </h2>
 
             <p>
+
                 Manage genres
+
             </p>
 
-        </a>
+        </div>
+
+    </a>
 
 
-        <a class="card"
-           href="/Library-Management-System/Project/books">
 
-            <h2>Books</h2>
+    <!-- BOOKS -->
+
+    <a href="/Library-Management-System/Project/books"
+       class="dashboard-link">
+
+        <div class="card">
+
+            <h2>
+
+                Books
+
+            </h2>
 
             <p>
+
                 Manage books
+
             </p>
 
-        </a>
+        </div>
+
+    </a>
 
 
-        <a class="card"
-           href="#">
 
-            <h2>Users</h2>
+    <!-- USERS -->
+
+    <a href="/Library-Management-System/Project/users"
+       class="dashboard-link">
+
+        <div class="card">
+
+            <h2>
+
+                Users
+
+            </h2>
 
             <p>
+
                 Manage members & librarians
+
             </p>
 
-        </a>
+        </div>
 
-    </div>
+    </a>
+
+</div>
 
 </div>
 

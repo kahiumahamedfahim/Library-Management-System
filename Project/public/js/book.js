@@ -260,5 +260,240 @@ document.addEventListener("DOMContentLoaded", () => {
         );
 
     });
+    // =========================
+// LIVE AVAILABILITY UPDATE
+// =========================
+
+if(typeof BOOK_ID !== "undefined")
+{
+    setInterval(() => {
+
+        fetch(
+            `/Library-Management-System/Project/api/books/availability?id=${BOOK_ID}`
+        )
+        .then(response => response.json())
+
+        .then(data => {
+
+            if(data.success)
+            {
+                // Count Update
+
+                const countElement =
+                    document.querySelector(
+                        "#availability-count"
+                    );
+
+                countElement.innerText =
+                    data.available_copies;
+
+
+                // Badge Update
+
+                const badge =
+                    document.querySelector(
+                        "#availability-badge"
+                    );
+
+
+                if(data.available)
+                {
+                    badge.innerText =
+                        "Available";
+
+                    badge.className =
+                        "availability-badge available";
+                }
+                else
+                {
+                    badge.innerText =
+                        "Unavailable";
+
+                    badge.className =
+                        "availability-badge unavailable";
+                }
+            }
+
+        });
+
+    }, 3000);
+}
+
+
+
+// Only run if search exists
+
+// =========================
+// LIVE BOOK SEARCH
+// =========================
+
+const searchInput =
+    document.querySelector("#search-input");
+
+
+if(searchInput)
+{
+    searchInput.addEventListener(
+        "keyup",
+
+        async function()
+        {
+            const query =
+                this.value;
+
+            const response =
+                await fetch(
+                    `/Library-Management-System/Project/api/books/search?q=${query}`
+                );
+
+            const books =
+                await response.json();
+
+            const tbody =
+                document.querySelector(
+                    "#book-table-body"
+                );
+
+            tbody.innerHTML = "";
+
+
+            books.forEach(book => {
+
+    let actions = "";
+
+
+    // MEMBER
+
+    // MEMBER
+
+if(currentUserRole && currentUserRole === "member")
+{
+    if(book.available_copies > 0)
+    {
+        actions = `
+
+            <form
+                method="POST"
+                action="/Library-Management-System/Project/borrow"
+            >
+
+                <input
+                    type="hidden"
+                    name="book_id"
+                    value="${book.id}"
+                >
+
+                <button
+                    type="submit"
+                    class="borrow-btn"
+                >
+                    Borrow
+                </button>
+
+            </form>
+        `;
+    }
+    else
+    {
+        actions = `
+
+            <span class="out-stock">
+                Unavailable
+            </span>
+        `;
+    }
+}
+
+// LIBRARIAN / ADMIN
+
+else if(
+    currentUserRole &&
+    (currentUserRole === "librarian" || currentUserRole === "admin")
+)
+{
+    actions = `
+
+        <a
+            class="edit-btn"
+            href="/Library-Management-System/Project/books/edit?id=${book.id}"
+        >
+            Edit
+        </a>
+
+        <form
+            method="POST"
+            action="/Library-Management-System/Project/books/delete"
+            class="delete-form"
+        >
+
+            <input
+                type="hidden"
+                name="id"
+                value="${book.id}"
+            >
+
+            <button
+                type="submit"
+                class="delete-btn"
+            >
+                Delete
+            </button>
+
+        </form>
+    `;
+}
+
+// GUEST
+
+else
+{
+    actions = `
+
+        <a
+            href="/Library-Management-System/Project/login"
+            class="login-btn"
+        >
+            Login to Borrow
+        </a>
+
+    `;
+}
+
+
+    tbody.innerHTML += `
+
+        <tr>
+
+            <td>${book.id}</td>
+
+            <td>${book.title}</td>
+
+            <td>${book.author}</td>
+
+            <td>${book.genre_name}</td>
+
+            <td>${book.isbn}</td>
+
+            <td>${book.total_copies}</td>
+
+            <td>${book.available_copies}</td>
+
+            <td>${book.shelf_location}</td>
+
+            <td>${book.published_year}</td>
+
+            <td>
+
+                ${actions}
+
+            </td>
+
+        </tr>
+    `;
+});
+
+        }
+    );
+}
 
 });

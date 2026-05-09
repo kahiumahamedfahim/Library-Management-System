@@ -22,16 +22,16 @@ $pageTitle = "Books";
 
         <h1>Books</h1>
 
-       <?php if(has_role(['admin', 'librarian'])): ?>
+        <?php if(has_role(['admin', 'librarian'])): ?>
 
-    <a class="add-btn"
-       href="/Library-Management-System/Project/books/create">
+            <a class="add-btn"
+               href="/Library-Management-System/Project/books/create">
 
-        Add Book
+                Add Book
 
-    </a>
+            </a>
 
-<?php endif; ?>
+        <?php endif; ?>
 
     </div>
 
@@ -52,6 +52,15 @@ $pageTitle = "Books";
         ?>
 
     <?php endif; ?>
+    <div class="search-box">
+
+    <input
+        type="text"
+        id="search-input"
+        placeholder="Search books..."
+    >
+
+</div>
 
 
     <!-- BOOK TABLE -->
@@ -79,83 +88,152 @@ $pageTitle = "Books";
                 <th>Shelf</th>
 
                 <th>Year</th>
-<?php if(has_role(['admin', 'librarian'])): ?>
 
-    <th>Actions</th>
+                <?php if(
+                    has_role(['admin', 'librarian']) ||
+                    has_role('member')
+                ): ?>
 
-<?php endif; ?>
+                    <th>Actions</th>
+
+                <?php endif; ?>
 
             </tr>
 
         </thead>
 
-        <tbody>
+        <tbody id="book-table-body">
 
         <?php foreach($books as $book): ?>
 
             <tr>
 
-                <td><?= $book['id'] ?></td>
-
-                <td><?= $book['title'] ?></td>
-
-                <td><?= $book['author'] ?></td>
-
-                <td><?= $book['genre_name'] ?></td>
-
-                <td><?= $book['isbn'] ?></td>
-
                 <td>
+                    <?= $book['id'] ?>
+                </td>
 
-    <?= $book['total_copies'] ?>
+               <td>
 
-</td>
+    <a href="/Library-Management-System/Project/books/details?id=<?= $book['id'] ?>">
 
-<td>
-
-    <?= $book['available_copies'] ?>
-
-</td>
-
-                <td><?= $book['shelf_location'] ?></td>
-
-                <td><?= $book['published_year'] ?></td>
-              <td>
-
-    <?php if(has_role(['admin', 'librarian'])): ?>
-
-<td>
-
-    <a class="edit-btn"
-       href="/Library-Management-System/Project/books/edit?id=<?= $book['id'] ?>">
-
-        Edit
+        <?= $book['title'] ?>
 
     </a>
 
-
-    <form method="POST"
-          action="/Library-Management-System/Project/books/delete"
-          class="delete-form">
-
-        <input
-            type="hidden"
-            name="id"
-            value="<?= $book['id'] ?>"
-        >
-
-        <button
-            type="submit"
-            class="delete-btn"
-        >
-            Delete
-        </button>
-
-    </form>
-
 </td>
 
-<?php endif; ?>
+                <td>
+                    <?= $book['author'] ?>
+                </td>
+
+                <td>
+                    <?= $book['genre_name'] ?>
+                </td>
+
+                <td>
+                    <?= $book['isbn'] ?>
+                </td>
+
+                <td>
+                    <?= $book['total_copies'] ?>
+                </td>
+
+                <td>
+                    <?= $book['available_copies'] ?>
+                </td>
+
+                <td>
+                    <?= $book['shelf_location'] ?>
+                </td>
+
+                <td>
+                    <?= $book['published_year'] ?>
+                </td>
+
+
+                <!-- ACTIONS -->
+
+                <?php if(
+                    has_role(['admin', 'librarian']) ||
+                    has_role('member')
+                ): ?>
+
+                    <td>
+
+                        <!-- MEMBER BORROW -->
+
+                        <?php if(has_role('member')): ?>
+
+                            <?php if($book['available_copies'] > 0): ?>
+
+                                <form method="POST"
+                                      action="/Library-Management-System/Project/borrow"
+                                      class="borrow-form">
+
+                                    <input
+                                        type="hidden"
+                                        name="book_id"
+                                        value="<?= $book['id'] ?>"
+                                    >
+
+                                    <button
+                                        type="submit"
+                                        class="borrow-btn"
+                                    >
+                                        Borrow
+                                    </button>
+
+                                </form>
+
+                            <?php else: ?>
+
+                                <span class="out-stock">
+
+                                    Unavailable
+
+                                </span>
+
+                            <?php endif; ?>
+
+                        <?php endif; ?>
+
+
+                        <!-- ADMIN / LIBRARIAN -->
+
+                        <?php if(has_role(['admin', 'librarian'])): ?>
+
+                            <a class="edit-btn"
+                               href="/Library-Management-System/Project/books/edit?id=<?= $book['id'] ?>">
+
+                                Edit
+
+                            </a>
+
+
+                            <form method="POST"
+                                  action="/Library-Management-System/Project/books/delete"
+                                  class="delete-form">
+
+                                <input
+                                    type="hidden"
+                                    name="id"
+                                    value="<?= $book['id'] ?>"
+                                >
+
+                                <button
+                                    type="submit"
+                                    class="delete-btn"
+                                >
+                                    Delete
+                                </button>
+
+                            </form>
+
+                        <?php endif; ?>
+
+                    </td>
+
+                <?php endif; ?>
 
             </tr>
 
@@ -166,7 +244,12 @@ $pageTitle = "Books";
     </table>
 
 </div>
+<script>
 
+    const currentUserRole =
+        "<?= $_SESSION['role'] ?? '' ?>";
+
+</script>
 
 <script src="/Library-Management-System/Project/public/js/book.js"></script>
 

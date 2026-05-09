@@ -113,4 +113,129 @@ public function changePassword($id, $newPassword)
         ':id' => $id
     ]);
 }
+// =========================
+// GET ALL USERS
+// =========================
+
+public function getAllUsers()
+{
+    $sql = "
+        SELECT *
+
+        FROM members
+
+        ORDER BY id DESC
+    ";
+
+    $stmt =
+        $this->conn->prepare($sql);
+
+    $stmt->execute();
+
+    return $stmt->fetchAll(PDO::FETCH_ASSOC);
+}
+// =========================
+// CREATE LIBRARIAN
+// =========================
+
+public function createLibrarian($data)
+{
+    $sql = "
+        INSERT INTO members
+        (
+            name,
+            email,
+            password_hash,
+            phone,
+            role
+        )
+
+        VALUES
+        (
+            :name,
+            :email,
+            :password_hash,
+            :phone,
+            'librarian'
+        )
+    ";
+
+    $stmt =
+        $this->conn->prepare($sql);
+
+    return $stmt->execute([
+
+        ':name' =>
+            $data['name'],
+
+        ':email' =>
+            $data['email'],
+
+        ':password_hash' =>
+            $data['password_hash'],
+
+        ':phone' =>
+            $data['phone']
+    ]);
+}
+// =========================
+// UPDATE USER
+// =========================
+
+public function updateUser($data)
+{
+    $sql = "
+        UPDATE members
+
+        SET
+            name = :name,
+            email = :email,
+            phone = :phone,
+            role = :role
+
+        WHERE id = :id
+    ";
+
+    $stmt =
+        $this->conn->prepare($sql);
+
+    return $stmt->execute([
+
+        ':id' =>
+            $data['id'],
+
+        ':name' =>
+            $data['name'],
+
+        ':email' =>
+            $data['email'],
+
+        ':phone' =>
+            $data['phone'],
+
+        ':role' =>
+            $data['role']
+    ]);
+}
+// =========================
+// DELETE USER
+// =========================
+
+public function deleteUser($id)
+{
+    $sql = "
+        DELETE FROM members
+
+        WHERE id = :id
+    ";
+
+    $stmt =
+        $this->conn->prepare($sql);
+
+    return $stmt->execute([
+
+        ':id' => $id
+    ]);
+}
+
 }

@@ -413,7 +413,24 @@ public function delete()
 
         exit;
     }
+// Check Active Borrows
 
+if(
+    $bookModel->hasActiveBorrows($id)
+)
+{
+    $_SESSION['message'] =
+        "Cannot delete book with active borrows";
+
+    $_SESSION['message_type'] =
+        "warning";
+
+    header(
+        "Location: /Library-Management-System/Project/books"
+    );
+
+    exit;
+}
     // Delete
 
     $bookModel->delete($id);
@@ -427,6 +444,105 @@ public function delete()
     header(
         "Location: /Library-Management-System/Project/books"
     );
+
+    exit;
+}
+// =========================
+// BOOK DETAILS
+// =========================
+
+public function details()
+{
+    $bookModel =
+        new Book();
+
+    $id =
+        $_GET['id'] ?? null;
+
+    $book =
+        $bookModel->findWithAvailability(
+            $id
+        );
+
+    if(!$book)
+    {
+        echo "Book Not Found";
+        exit;
+    }
+
+    require_once __DIR__ .
+    '/../views/book/details.php';
+}
+// =========================
+// BOOK AVAILABILITY API
+// =========================
+
+public function availability()
+{
+    $bookModel =
+        new Book();
+
+    $id =
+        $_GET['id'] ?? null;
+
+    $book =
+        $bookModel->findWithAvailability(
+            $id
+        );
+
+    header(
+        'Content-Type: application/json'
+    );
+
+    if(!$book)
+    {
+        echo json_encode([
+
+            'success' => false
+        ]);
+
+        exit;
+    }
+
+    echo json_encode([
+
+        'success' => true,
+
+        'available_copies' =>
+            $book['available_copies'],
+
+        'available' =>
+            $book['available_copies'] > 0
+    ]);
+
+    exit;
+}
+// =========================
+// SEARCH API
+// =========================
+
+public function searchApi()
+{
+    $bookModel =
+        new Book();
+
+    $query =
+        trim($_GET['q'] ?? '');
+
+
+    // SEARCH
+
+    $books =
+        $bookModel->search($query);
+
+
+    // JSON RESPONSE
+
+    header(
+        'Content-Type: application/json'
+    );
+
+    echo json_encode($books);
 
     exit;
 }

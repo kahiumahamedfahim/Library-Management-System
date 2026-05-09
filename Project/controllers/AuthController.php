@@ -1,6 +1,6 @@
 <?php
 
-session_start();
+// session_start();
 
 require_once __DIR__ . '/../models/Member.php';
 
@@ -124,20 +124,24 @@ exit;
                     $_SESSION['role'] = $member['role'];
 
                     // Role Redirect
-
-                    if ($member['role'] === 'admin') {
-
-                        header("Location: views/dashboard/admin.php");
-
-                    } elseif ($member['role'] === 'librarian') {
-
-                        header("Location: views/dashboard/librarian.php");
-
-                    } else {
-
-                        header("Location: views/dashboard/member.php");
-                    }
-
+if ($member['role'] === 'admin')
+{
+    header(
+        "Location: /Library-Management-System/Project/dashboard/admin"
+    );
+}
+elseif ($member['role'] === 'librarian')
+{
+    header(
+        "Location: /Library-Management-System/Project/dashboard/librarian"
+    );
+}
+else
+{
+    header(
+        "Location: /Library-Management-System/Project/dashboard/member"
+    );
+}
                     exit;
                 }
             }

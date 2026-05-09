@@ -116,25 +116,30 @@ $pageTitle = "Create Book";
 
             <div class="form-group">
 
-                <label>ISBN</label>
+    <label>
 
-                <input
-                    type="text"
-                    name="isbn"
-                    value="<?= $_POST['isbn'] ?? '' ?>"
-                >
+        ISBN
 
-                <?php if(isset($errors['isbn'])): ?>
+    </label>
 
-                    <p class="field-error">
+    <input type="text"
+           name="isbn"
 
-                        <?= $errors['isbn'] ?>
+           placeholder="Enter 10 or 13 digit ISBN"
 
-                    </p>
+           required>
 
-                <?php endif; ?>
 
-            </div>
+    <small class="hint">
+
+        Example:
+        1234567890
+        or
+        9781234567890
+
+    </small>
+
+</div>
 
 
             <!-- COPIES -->

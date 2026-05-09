@@ -21,73 +21,121 @@ $pageTitle = "Member Dashboard";
 '/../layouts/navbar.php'; ?>
 
 
-<div class="container">
-
-    <h1>Member Dashboard</h1>
-
-    <h3>
-        Welcome,
-        <?= $_SESSION['name'] ?>
-    </h3>
-
-    <p class="role">
-        Role:
-        <?= $_SESSION['role'] ?>
-    </p>
+<div class="dashboard-container">
 
 
-    <!-- ========================= -->
-    <!-- SUMMARY CARDS -->
-    <!-- ========================= -->
+    <!-- HEADER -->
 
-    <div class="dashboard-cards">
+    <div class="dashboard-header">
 
-        <!-- Active Loans -->
+        <h1>
 
-        <div class="card">
+            Member Dashboard
 
-            <h2>0</h2>
+        </h1>
 
-            <p>Active Loans</p>
+        <p>
+
+            Welcome,
+            <?= $_SESSION['name'] ?>
+
+        </p>
+
+
+        <span class="role-badge">
+
+            <?= $_SESSION['role'] ?>
+
+        </span>
+
+    </div>
+
+
+
+    <!-- STATS -->
+
+    <div class="stats-grid">
+
+
+        <!-- ACTIVE LOANS -->
+
+        <div class="stat-card">
+
+            <div class="stat-number">
+
+                <?= $activeLoans ?>
+
+            </div>
+
+            <div class="stat-title">
+
+                Active Loans
+
+            </div>
 
         </div>
 
 
-        <!-- Upcoming Due -->
 
-        <div class="card">
+        <!-- UPCOMING DUE -->
 
-            <h2>0</h2>
+        <div class="stat-card">
 
-            <p>Upcoming Due Dates</p>
+            <div class="stat-number">
+
+                <?= $upcomingDue ?>
+
+            </div>
+
+            <div class="stat-title">
+
+                Upcoming Due Dates
+
+            </div>
 
         </div>
 
 
-        <!-- Outstanding Fines -->
 
-        <div class="card">
+        <!-- FINES -->
 
-            <h2>0</h2>
+        <div class="stat-card">
 
-            <p>Outstanding Fines</p>
+            <div class="stat-number">
+
+                <?= $outstandingFines ?>
+
+            </div>
+
+            <div class="stat-title">
+
+                Outstanding Fines
+
+            </div>
 
         </div>
 
     </div>
 
 
-    <!-- ========================= -->
-    <!-- ACTION BUTTONS -->
-    <!-- ========================= -->
 
-    <div class="actions">
+    <!-- ACTION BUTTONS -->
+
+    <div class="dashboard-actions">
 
         <a href="/Library-Management-System/Project/profile">
 
             My Profile
 
         </a>
+
+
+        <a href="/Library-Management-System/Project/my-books">
+
+            My Books
+
+        </a>
+
 
         <a href="/Library-Management-System/Project/logout">
 
@@ -99,8 +147,6 @@ $pageTitle = "Member Dashboard";
 
 </div>
 
-
-<script src="/Library-Management-System/Project/public/js/member.js"></script>
 
 <?php require_once __DIR__ .
 '/../layouts/footer.php'; ?>
